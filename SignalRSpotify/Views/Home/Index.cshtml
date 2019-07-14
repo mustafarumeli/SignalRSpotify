@@ -2,7 +2,41 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div id="createRoom__container" style="display:none">
+    <input type="text" class="form-control-lg" placeholder="Room Name" id="roomName" required />
+    <button id="createRoom" class="btn btn-success" onclick="CreateorJoinSignalRRoom(true)">Create Room</button>
+    <button id="createRoom" class="btn btn-success" onclick="CreateorJoinSignalRRoom(false)">Join Room</button>
+    <div style="border-top:1px solid #ccc">
+        <input type="text" class="form-control-lg" placeholder="Message" id="roomMsg" required />
+        <button id="createRoom" class="btn btn-info accept-policy" onclick="SendRoomMesage()">Send</button>
+    </div>
+    <textarea id="summernote"></textarea>
 </div>
+<audio id="audio" controls onplay="TogglePlayingStatus(true); console.log('asd')" onpause="TogglePlayingStatus(false)">
+    <source src="horse.ogg" type="audio/ogg">
+    <source src="https://p.scdn.co/mp3-preview/4839b070015ab7d6de9fec1756e1f3096d908fba?cid=774b29d4f13844c495f206cafdad9c86" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+<link href="~/summernote/summernote-bs4.css" rel="stylesheet" />
+@section scripts {
+    <script src="~/summernote/summernote-bs4.js"></script>
+    <script>
+        var userId = $.cookie("userId");
+        if (userId === undefined) {
+            $("#createRoom__container").hide();
+        }
+        $(document).ready(function () {
+            $('#summernote').summernote({
+                height: 300,
+                minHeight: null,
+                maxHeight: null,
+                focus: true,
+                callbacks: {
+                    onKeyup: function () {
+                        WriteText();
+                    }
+                }
+            });
+        });
+    </script>
+}

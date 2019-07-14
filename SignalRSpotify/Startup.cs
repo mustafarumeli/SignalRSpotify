@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SignalRSpotify.Classes.Database;
+using Microsoft.EntityFrameworkCore;
+using SignalRSpotify.Classes.Database.Entities;
+using SignalRSpotify.Classes.SignalRHub;
 
 namespace SignalRSpotify
 {
@@ -29,7 +33,10 @@ namespace SignalRSpotify
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            var connectionString = Configuration.GetValue<string>("ConnectionString");
+            services.AddDbContext<SandSContext>(opt => opt.UseSqlServer(connectionString));
 
+            services.AddSignalR();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -48,7 +55,7 @@ namespace SignalRSpotify
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            app.UseSignalR(confg => confg.MapHub<TestHub>("/TestHub"));
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
